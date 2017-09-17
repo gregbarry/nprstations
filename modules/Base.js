@@ -6,21 +6,17 @@ const moment = require('moment'),
       json2csv = require('json2csv'),
       _ = require('lodash'),
       fs = require('fs'),
-      dateFormat = "YYYY-MM-DD";
-
-let startDate = moment().format(dateFormat),
-    modStartDate = startDate,
-    allPlaylist = [], i;
-
-const fields = ['id', 'trackName', 'artistName'],
-      dateThreshold = 30,
+      dateFormat = "YYYY-MM-DD",
+      startDate = moment().format(dateFormat),
+      fields = ['id', 'trackName', 'artistName'],
+      dateThreshold = 10,
       stationID = "52151127562ad89a7500001a",
       playlistID = "1504883890981",
-      baseURL = "https://api.composer.nprstations.org/v1/widget",
-      testURL = "https://api.composer.nprstations.org/v1/widget/52151127562ad89a7500001a/playlist?t=1504883890981&before=2017-09-08";
+      baseURL = "https://api.composer.nprstations.org/v1/widget";
 
-let endPointURL = baseURL + "/" + stationID + "/playlist?t=" + playlistID + "&before=";
-
+let endPointURL = `${baseURL}/${stationID}/playlist?t=${playlistID}&before=`,
+    modStartDate = startDate,
+    allPlaylist = [], i;
 
 class Base {    
     /**
