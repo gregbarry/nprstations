@@ -2,7 +2,10 @@
 'use strict';
 
 let base = require('./modules/Base');
+let spotify = require('./modules/Spotify');
 
-base = new base();
+//base = new base();
+//base.makeRequest();
 
-base.makeRequest();
+spotify = new spotify
+spotify.run();
