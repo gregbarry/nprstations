@@ -94,11 +94,7 @@ class Spotify {
 
     console.log(difference);
 
-    const myTrack = await spotifyApi.addTracksToPlaylist(
-      username,
-      playlistId,
-      difference
-    );
+    const myTrack = await spotifyApi.addTracksToPlaylist(username, playlistId,difference);
     console.log("Songs added to playlist");
   }
 }
