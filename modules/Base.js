@@ -9,30 +9,22 @@ const moment = require("moment"),
   dateFormat = "YYYY-MM-DD",
   startDate = moment().format(dateFormat),
   fields = ["id", "trackName", "artistName"],
-  dateThreshold = 1,
+  dateThreshold = 3,
   stationID = "52151127562ad89a7500001a",
   playlistID = "1504883890981",
-  baseURL = "https://api.composer.nprstations.org/v1/widget";
+  baseURL = "https://api.composer.nprstations.org/v1/widget",
+  filterArtist = ['Image', 'Dry', 'Legal ID', 'Bumps', 'Promo'];
 
 let endPointURL = `${baseURL}/${stationID}/playlist?t=${playlistID}&before=`,
   modStartDate = startDate,
-  allPlaylist = [],
-  i;
+  allPlaylist = [], i;
+
+fs.unlinkSync('playlist.csv', (err) => {
+  if (err) throw err;
+  console.log('successfully deleted old playlist');
+});
 
 class Base {
-  /**
- * @method writeFile
- * @param {*} allPlaylist 
- */
-  writeFile(allPlaylist) {
-    let csv = json2csv({ data: allPlaylist, fields: fields });
-
-    fs.writeFile("playlist.csv", csv, function(err) {
-      if (err) throw err;
-      console.log("file saved");
-    });
-  }
-
   async run() {
     for (i = 0; i < dateThreshold; i++) {
       if (i !== 0) {
@@ -52,12 +44,24 @@ class Base {
           console.log(newEndPointURL);
 
           songData.forEach(function(song) {
-            if (!_.some(allPlaylist, { id: song.id })) {
-              allPlaylist.push({
-                id: song.id,
-                trackName: song.trackName,
-                artistName: song.artistName
+            const {id,trackName,artistName} = song;
+            let foundKeyword = false;
+            if (!_.some(allPlaylist, { id }) 
+            && !filterArtist.includes(artistName)
+            && trackName !== trackName.toUpperCase()) {
+              filterArtist.forEach(function(keyword) {
+                if (artistName.startsWith(keyword)) {
+                  // Set a flag to indicate something from the filter starts the artist name
+                  foundKeyword = true;
+                }
               });
+
+               // Don't add artists starting with words in the filter
+              if (!foundKeyword) {
+                allPlaylist.push({
+                  id, trackName, artistName
+                });
+              }
             }
           });
         } else {
@@ -72,7 +76,12 @@ class Base {
     }
 
     if (i == dateThreshold) {
-      this.writeFile(allPlaylist);
+      let csv = json2csv({ data: allPlaylist, fields: fields });
+      
+      fs.writeFile("playlist.csv", csv, function(err) {
+        if (err) throw err;
+        console.log("file saved");
+      });
     }
   }
 }

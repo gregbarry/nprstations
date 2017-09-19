@@ -11,13 +11,11 @@ const fs = require("fs"),
   ),
   clientId = configs.id,
   clientSecret = configs.secret,
-  data = fs.readFileSync(path.join(__dirname, "../playlist.csv"), {
-    encoding: "utf8"
-  }),
   redirectUri = "http://localhost:8082/",
   playlistId = "2Ym4ezp8A0akNHYZg6Cd4y",
   testPlaylistId = "2XDHXoOydjxZ7kbv1KZV32",
   username = "lowlevelbass",
+  base = require("./Base"),
   request = require("request-promise-native"),
   shelljs = require("shelljs"),
   csvjson = require("csvjson"),
@@ -48,7 +46,9 @@ class Spotify {
     //const currentPlaylist = await spotifyApi.getPlaylist(username, playlistId);
     const currentPlaylist = await spotifyApi.getPlaylist(username, playlistId);
     const currentTracks = currentPlaylist.body.tracks.items;
-
+    const data = fs.readFileSync(path.join(__dirname, "../playlist.csv"), {
+      encoding: "utf8"
+    });
     let currentTracksArray = [];
     let newTracksArray = [];
 
@@ -66,7 +66,7 @@ class Spotify {
 
     for (let track of newTracks) {
       const [, trackName, artistName] = track;
-
+      const songString = trackName + " - " + artistName;
       try {
         const tracks = await spotifyApi.searchTracks(
           `track:${trackName} artist:${artistName}`
@@ -77,25 +77,31 @@ class Spotify {
             ? searchResultTracks.items[0].id
             : undefined;
 
-        if (songId) {
-          console.log("Found song: ", songId);
+        if (songId && !currentTracksArray.includes(songId)) {
+          console.log("Found song: ", songString);
           newTracksArray.push(songId);
+        } else {
+          // Either it's a duplicate or could not be found
+          console.log("Not adding " + songString);
         }
       } catch (e) {
         console.log("There was an error", e);
       }
     }
-    let difference = _.difference(
-      newTracksArray,
-      currentTracksArray
-    ).map(track => {
+
+    console.log("Creating collection of new tracks ")
+    let finalTracks = newTracksArray.map(track => {
       return `spotify:track:${track}`;
     });
 
-    console.log(difference);
+    console.log("Chunking array into consumable pieces");
 
-    const myTrack = await spotifyApi.addTracksToPlaylist(username, playlistId,difference);
-    console.log("Songs added to playlist");
+    const chunked = _.chunk(finalTracks, 30);
+
+    for (let chunk of chunked) {
+      const myTrack = await spotifyApi.addTracksToPlaylist(username, playlistId,chunk);
+      console.log("Songs added to playlist");
+    }; 
   }
 }
 
