@@ -7,6 +7,6 @@ const Spotify = require('./modules/Spotify');
 const base = new Base();
 base.run()
 .then(() => {
-    const spotify = new Spotify
+    const spotify = new Spotify;
     spotify.run();
 });
