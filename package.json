@@ -1,21 +1,31 @@
 {
-  "name": "nprstations",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
-    "csvjson": "^4.3.4",
-    "csvtojson": "^1.1.7",
-    "json2csv": "^3.11.2",
-    "moment": "^2.18.1",
-    "request": "^2.81.0",
-    "request-promise-native": "^1.0.4",
-    "shelljs": "^0.7.8",
-    "spotify-web-api-node": "^2.5.0"
-  }
+	"name": "nprstations",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"buildPlaylist": "./node_modules/.bin/babel-node ./index.js"
+	},
+	"author": "Greg Barry",
+	"license": "ISC",
+	"dependencies": {
+		"bristol": "^0.4.0",
+		"csvjson": "^4.3.4",
+		"csvtojson": "^1.1.7",
+		"json2csv": "^3.11.2",
+		"moment": "^2.18.1",
+		"request": "^2.81.0",
+		"request-promise-native": "^1.0.4",
+		"shelljs": "^0.7.8",
+		"spotify-web-api-node": "^2.5.0"
+	},
+	"devDependencies": {
+		"babel-cli": "^6.11.4",
+		"babel-core": "^6.26.0",
+		"babel-eslint": "^7.2.3",
+		"babel-preset-env": "^1.6.1",
+		"babel-preset-stage-3": "^6.24.1",
+		"node-babel": "^0.1.2"
+	}
 }
