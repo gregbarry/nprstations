@@ -11,8 +11,8 @@
 # encoded as a json object with properties `id` and `secret`
 
 # TODO grab client id and secret first from args, if not, then this file, if not, exit with an error
-client_id=$(jq -r '.id' ./config/spotify_client_creds.json)
-client_secret=$(jq -r '.secret' ./config/spotify_client_creds.json)
+client_id=$(jq -r '.id' ./config/spotify.json)
+client_secret=$(jq -r '.secret' ./config/spotify.json)
 port=8082
 redirect_uri=http%3A%2F%2Flocalhost%3A$port%2F
 auth_endpoint=https://accounts.spotify.com/authorize/?response_type=code\&client_id=$client_id\&redirect_uri=$redirect_uri
