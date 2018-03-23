@@ -34,7 +34,7 @@ const takeBreak = async () => {
     await sleep(2000);
 }
 
-const accessSpotify = async () => {
+const accessSpotify = () => {
     // Grab Spotify tokens using shell script.  We will need the access AND the refresh token
     const tokens = JSON.parse(shelljs.exec('./spotify_oauth.sh', { silent: true }).stdout);
     const {access_token, refresh_token} = tokens;
@@ -96,7 +96,7 @@ const main = async () => {
             });
         }
 
-        const spotifyApi = await accessSpotify();
+        const spotifyApi = accessSpotify();
 
         // In order to prevent duplicates, we'll need to get the entire playlist to check for dupes
         // Grab total, calculate number of calls, fill array
